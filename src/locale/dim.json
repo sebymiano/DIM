@@ -667,6 +667,7 @@
       "Track": "Track {{itemType}}",
       "Untrack": "Untrack {{itemType}}"
     },
+    "TriageTab": "Triage",
     "Vault": "Vault"
   },
   "Notes": {
@@ -831,6 +832,10 @@
     "TagItem": "Tag Item",
     "TagItems": "Tag Items",
     "UnlockAll": "Unlock Items"
+  },
+  "Triage": {
+    "HighestInSlot": "Highest base {{stat}} in this equipment slot.",
+    "NumberOfThese": "{{count}} others of this type:"
   },
   "TrialsCard": {
     "FiveWins": "5 Win Reward (Armor)",

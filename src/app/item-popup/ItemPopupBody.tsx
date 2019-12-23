@@ -5,6 +5,7 @@ import ItemOverview from './ItemDetails';
 import { ItemPopupExtraInfo } from './item-popup';
 import clsx from 'clsx';
 import ItemReviews from '../item-review/ItemReviews';
+import ItemTriage from '../item-triage/ItemTriage';
 import { percent } from '../shell/filters';
 import { AppIcon } from '../shell/icons';
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +13,7 @@ import { Frame, Track, View, ViewPager } from 'react-view-pager';
 
 export const enum ItemPopupTab {
   Overview,
+  Triage,
   Reviews
 }
 
@@ -48,15 +50,26 @@ export default function ItemPopupBody({
       tab: ItemPopupTab.Overview,
       title: t('MovePopup.OverviewTab'),
       component: <ItemOverview item={item} extraInfo={extraInfo} />
-    }
+    },
+    ...(item.isDestiny2()
+      ? [
+          {
+            tab: ItemPopupTab.Triage,
+            title: t('MovePopup.TriageTab'),
+            component: <ItemTriage item={item} />
+          }
+        ]
+      : []),
+    ...(item.reviewable
+      ? [
+          {
+            tab: ItemPopupTab.Reviews,
+            title: t('MovePopup.ReviewsTab'),
+            component: <ItemReviews item={item} />
+          }
+        ]
+      : [])
   ];
-  if (item.reviewable) {
-    tabs.push({
-      tab: ItemPopupTab.Reviews,
-      title: t('MovePopup.ReviewsTab'),
-      component: <ItemReviews item={item} />
-    });
-  }
 
   const onViewChange = (indices) => {
     onTabChanged(tabs[indices[0]].tab);
