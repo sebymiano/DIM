@@ -1,9 +1,13 @@
 import React from 'react';
 import { D2Item } from '../inventory/item-types';
 import { DestinyClass } from 'bungie-api-ts/destiny2';
-import SpecialtyModSlotIcon from 'app/dim-ui/SpecialtyModSlotIcon';
+import {
+  getSpecialtyModSocketDisplayName,
+  SpecialtyModSocketIcon,
+  getArmorSlotSpecificModSocketDisplayName,
+  ArmorSlotSpecificModSocketIcon
+} from 'app/dim-ui/ModSocketTypeIcon';
 import { armorStatHashes } from 'app/search/search-filter-hashes';
-import { getItemSpecialtyModSlotDisplayName } from 'app/utils/item-utils';
 import ElementIcon from 'app/inventory/ElementIcon';
 import BungieImage from 'app/dim-ui/BungieImage';
 import styles from './ItemTriage.m.scss';
@@ -14,11 +18,11 @@ export default function ItemTriage({ item }: { item: D2Item }) {
   const factors = getItemDesirableFactors(item);
 
   return (
-    <>
+    <div className={styles.itemTriagePane}>
       {factors.map((factor, index) => (
         <div key={index}>{factor.factors.map((factor) => factor.render)}</div>
       ))}
-    </>
+    </div>
   );
 }
 
@@ -36,10 +40,23 @@ const itemElement: FactorGenerator = (exampleItem) => ({
   compareToExample: (i: D2Item) => i.dmg === exampleItem.dmg,
   overallAdjust: (overall: number, _item: D2Item) => overall++
 });
-const itemSpecialtySlot: FactorGenerator = (exampleItem) => ({
-  render: <SpecialtyModSlotIcon className={styles.inlineIcon} item={exampleItem} lowRes={true} />,
+const itemSpecialtySocket: FactorGenerator = (exampleItem) => ({
+  render: <SpecialtyModSocketIcon className={styles.inlineIcon} item={exampleItem} lowRes={true} />,
   compareToExample: (i: D2Item) =>
-    getItemSpecialtyModSlotDisplayName(i) === getItemSpecialtyModSlotDisplayName(exampleItem),
+    getSpecialtyModSocketDisplayName(i) === getSpecialtyModSocketDisplayName(exampleItem),
+  overallAdjust: (overall: number, _item: D2Item) => overall++
+});
+const itemArmorSlotSpecificSocket: FactorGenerator = (exampleItem) => ({
+  render: (
+    <ArmorSlotSpecificModSocketIcon
+      className={styles.inlineIcon}
+      item={exampleItem}
+      lowRes={true}
+    />
+  ),
+  compareToExample: (i: D2Item) =>
+    getArmorSlotSpecificModSocketDisplayName(i) ===
+    getArmorSlotSpecificModSocketDisplayName(exampleItem),
   overallAdjust: (overall: number, _item: D2Item) => overall++
 });
 
@@ -95,14 +112,14 @@ function getItemDesirableFactors(exampleItem: D2Item) {
   }
 
   if (exampleItem.bucket.sort && ['Armor'].includes(exampleItem.bucket.sort)) {
-    if (getItemSpecialtyModSlotDisplayName(exampleItem)) {
+    if (getSpecialtyModSocketDisplayName(exampleItem)) {
       factorFinders.push(
         {
-          factors: [itemSpecialtySlot(exampleItem)],
+          factors: [itemArmorSlotSpecificSocket(exampleItem), itemSpecialtySocket(exampleItem)],
           overall: 0
         },
         {
-          factors: [itemElement(exampleItem), itemSpecialtySlot(exampleItem)],
+          factors: [itemElement(exampleItem), itemSpecialtySocket(exampleItem)],
           overall: 0
         },
         ...statsToFindMaxesFor.map((statHash) => ({

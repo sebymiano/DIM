@@ -46,7 +46,7 @@ import { setItemState as d1SetItemState } from '../bungie-api/destiny1-api';
 import { setLockState as d2SetLockState } from '../bungie-api/destiny2-api';
 import { showNotification } from 'app/notifications/notifications';
 import { getItemSpecialtyModSlotDisplayName } from 'app/utils/item-utils';
-import SpecialtyModSlotIcon from 'app/dim-ui/SpecialtyModSlotIcon';
+import { SpecialtyModSocketIcon } from 'app/dim-ui/ModSocketTypeIcon';
 import { t } from 'app/i18next-t';
 import { DestinyCollectibleState } from 'bungie-api-ts/destiny2';
 import CompareStat from 'app/compare/CompareStat';
@@ -384,7 +384,7 @@ function ItemTable({
         // TODO: only show if there are mod slots
         accessor: getItemSpecialtyModSlotDisplayName, //
         Cell: ({ cell: { value }, row: { original: item } }) =>
-          value && <SpecialtyModSlotIcon className={styles.modSlot} item={item} />,
+          value && <SpecialtyModSocketIcon className={styles.modSlot} item={item} />,
         sortType: 'basic'
       },
       {
