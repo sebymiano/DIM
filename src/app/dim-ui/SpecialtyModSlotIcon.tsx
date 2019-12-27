@@ -10,6 +10,7 @@ import styles from './SpecialtyModSlotIcon.m.scss';
 interface ProvidedProps {
   item: DimItem;
   className?: string;
+  lowRes?: boolean;
 }
 interface StoreProps {
   defs: D2ManifestDefinitions;
@@ -21,13 +22,13 @@ function mapStateToProps() {
 }
 type Props = ProvidedProps & StoreProps;
 
-function SpecialtyModSlotIcon({ item, className, defs }: Props) {
+function SpecialtyModSlotIcon({ item, className, lowRes, defs }: Props) {
   const specialtySocket = getSpecialtySocket(item);
   const emptySlotHash = specialtySocket && specialtySocket.socketDefinition.singleInitialItemHash;
   const emptySlotIcon = emptySlotHash && defs.InventoryItem.get(emptySlotHash);
   return emptySlotIcon ? (
     <div
-      className={`${className} ${styles.specialtyModIcon}`}
+      className={`${className} ${styles.specialtyModIcon} ${lowRes ? styles.lowRes : ''}`}
       title={emptySlotIcon.displayProperties.name}
       style={bungieBackgroundStyle(emptySlotIcon.displayProperties.icon)}
     />
