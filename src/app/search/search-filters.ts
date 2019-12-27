@@ -38,6 +38,7 @@ import {
   specialtyModSlotFilterNames
 } from 'app/utils/item-utils';
 import { DEFAULT_SHADER } from 'app/inventory/store/sockets';
+import includeIf from 'app/utils/include-if';
 
 /**
  * (to the tune of TMNT) ♪ string processing helper functions ♫
@@ -127,7 +128,7 @@ export function buildSearchConfig(destinyVersion: 1 | 2): SearchConfig {
   // Add new ItemCategoryHash hashes to this, to add new category searches
   const categoryHashFilters: { [key: string]: number } = {
     ...hashes.D1CategoryHashes,
-    ...(isD2 ? hashes.D2CategoryHashes : {})
+    ...includeIf(isD2, hashes.D2CategoryHashes)
   };
 
   const stats = [
@@ -147,10 +148,17 @@ export function buildSearchConfig(destinyVersion: 1 | 2): SearchConfig {
     'discipline',
     'intellect',
     'strength',
-    ...(isD1 ? ['rof'] : []),
-    ...(isD2
-      ? ['rpm', 'mobility', 'recovery', 'resilience', 'drawtime', 'inventorysize', 'total', 'any']
-      : [])
+    ...includeIf(isD1, ['rof']),
+    ...includeIf(isD2, [
+      'rpm',
+      'mobility',
+      'recovery',
+      'resilience',
+      'drawtime',
+      'inventorysize',
+      'total',
+      'any'
+    ])
   ];
 
   /**
@@ -199,83 +207,79 @@ export function buildSearchConfig(destinyVersion: 1 | 2): SearchConfig {
     onwrongclass: ['onwrongclass'],
     hasnotes: ['hasnotes'],
     cosmetic: ['cosmetic'],
-    ...(isD1
-      ? {
-          hasLight: ['light', 'haslight'],
-          tracked: ['tracked'],
-          untracked: ['untracked'],
-          sublime: ['sublime'],
-          incomplete: ['incomplete'],
-          complete: ['complete'],
-          xpcomplete: ['xpcomplete'],
-          xpincomplete: ['xpincomplete', 'needsxp'],
-          upgraded: ['upgraded'],
-          unascended: ['unascended', 'unassended', 'unasscended'],
-          ascended: ['ascended', 'assended', 'asscended'],
-          reforgeable: ['reforgeable', 'reforge', 'rerollable', 'reroll'],
-          ornament: ['ornamentable', 'ornamentmissing', 'ornamentunlocked'],
-          engram: ['engram'],
-          stattype: ['intellect', 'discipline', 'strength'],
-          glimmer: ['glimmeritem', 'glimmerboost', 'glimmersupply'],
-          vendor: [
-            'fwc',
-            'do',
-            'nm',
-            'speaker',
-            'variks',
-            'shipwright',
-            'vanguard',
-            'osiris',
-            'xur',
-            'shaxx',
-            'cq',
-            'eris',
-            'ev',
-            'gunsmith'
-          ],
-          activity: [
-            'vanilla',
-            'trials',
-            'ib',
-            'qw',
-            'cd',
-            'srl',
-            'vog',
-            'ce',
-            'ttk',
-            'kf',
-            'roi',
-            'wotm',
-            'poe',
-            'coe',
-            'af',
-            'dawning',
-            'aot'
-          ]
-        }
-      : {}),
-    ...(isD2
-      ? {
-          ammoType: ['special', 'primary', 'heavy'],
-          hascapacity: ['hascapacity', 'armor2.0'],
-          complete: ['goldborder', 'yellowborder', 'complete'],
-          curated: ['curated'],
-          event: ['dawning', 'crimsondays', 'solstice', 'fotl', 'revelry'],
-          hasLight: ['light', 'haslight', 'haspower'],
-          hasMod: ['hasmod'],
-          modded: ['modded'],
-          hasShader: ['shaded', 'hasshader'],
-          ikelos: ['ikelos'],
-          masterwork: ['masterwork', 'masterworks'],
-          powerfulreward: ['powerfulreward'],
-          randomroll: ['randomroll'],
-          reacquirable: ['reacquirable'],
-          trashlist: ['trashlist'],
-          wishlist: ['wishlist'],
-          wishlistdupe: ['wishlistdupe']
-        }
-      : {}),
-    ...($featureFlags.reviewsEnabled ? { hasRating: ['rated', 'hasrating'] } : {})
+    ...includeIf(isD1, {
+      hasLight: ['light', 'haslight'],
+      tracked: ['tracked'],
+      untracked: ['untracked'],
+      sublime: ['sublime'],
+      incomplete: ['incomplete'],
+      complete: ['complete'],
+      xpcomplete: ['xpcomplete'],
+      xpincomplete: ['xpincomplete', 'needsxp'],
+      upgraded: ['upgraded'],
+      unascended: ['unascended', 'unassended', 'unasscended'],
+      ascended: ['ascended', 'assended', 'asscended'],
+      reforgeable: ['reforgeable', 'reforge', 'rerollable', 'reroll'],
+      ornament: ['ornamentable', 'ornamentmissing', 'ornamentunlocked'],
+      engram: ['engram'],
+      stattype: ['intellect', 'discipline', 'strength'],
+      glimmer: ['glimmeritem', 'glimmerboost', 'glimmersupply'],
+      vendor: [
+        'fwc',
+        'do',
+        'nm',
+        'speaker',
+        'variks',
+        'shipwright',
+        'vanguard',
+        'osiris',
+        'xur',
+        'shaxx',
+        'cq',
+        'eris',
+        'ev',
+        'gunsmith'
+      ],
+      activity: [
+        'vanilla',
+        'trials',
+        'ib',
+        'qw',
+        'cd',
+        'srl',
+        'vog',
+        'ce',
+        'ttk',
+        'kf',
+        'roi',
+        'wotm',
+        'poe',
+        'coe',
+        'af',
+        'dawning',
+        'aot'
+      ]
+    }),
+    ...includeIf(isD2, {
+      ammoType: ['special', 'primary', 'heavy'],
+      hascapacity: ['hascapacity', 'armor2.0'],
+      complete: ['goldborder', 'yellowborder', 'complete'],
+      curated: ['curated'],
+      event: ['dawning', 'crimsondays', 'solstice', 'fotl', 'revelry'],
+      hasLight: ['light', 'haslight', 'haspower'],
+      hasMod: ['hasmod'],
+      modded: ['modded'],
+      hasShader: ['shaded', 'hasshader'],
+      ikelos: ['ikelos'],
+      masterwork: ['masterwork', 'masterworks'],
+      powerfulreward: ['powerfulreward'],
+      randomroll: ['randomroll'],
+      reacquirable: ['reacquirable'],
+      trashlist: ['trashlist'],
+      wishlist: ['wishlist'],
+      wishlistdupe: ['wishlistdupe']
+    }),
+    ...includeIf($featureFlags.reviewsEnabled, { hasRating: ['rated', 'hasrating'] })
   };
 
   // Filters that operate on numeric ranges with comparison operators
@@ -285,9 +289,9 @@ export function buildSearchConfig(destinyVersion: 1 | 2): SearchConfig {
     'stack',
     'count',
     'year',
-    ...(isD1 ? ['level', 'quality', 'percentage'] : []),
-    ...(isD2 ? ['masterwork', 'season'] : []),
-    ...($featureFlags.reviewsEnabled ? ['rating', 'ratingcount'] : [])
+    ...includeIf(isD1, ['level', 'quality', 'percentage']),
+    ...includeIf(isD2, ['masterwork', 'season']),
+    ...includeIf($featureFlags.reviewsEnabled, ['rating', 'ratingcount'])
   ];
 
   // Filters that operate with fixed predicate values or freeform text, plus the processed above ranges
@@ -319,16 +323,14 @@ export function buildSearchConfig(destinyVersion: 1 | 2): SearchConfig {
     ...hashes.energyCapacityTypes.filter(Boolean).map((element) => `energycapacity:${element}`),
     ...operators.map((comparison) => `energycapacity:${comparison}`),
     // "source:" keyword plus one for each source
-    ...(isD2
-      ? [
-          'source:',
-          ...Object.keys(D2Sources).map((word) => `source:${word}`),
-          // maximum stat finders
-          ...hashes.armorStatNames.map((armorStat) => `maxbasestatvalue:${armorStat}`),
-          ...hashes.armorStatNames.map((armorStat) => `maxstatvalue:${armorStat}`),
-          ...hashes.armorStatNames.map((armorStat) => `maxstatloadout:${armorStat}`)
-        ]
-      : []),
+    ...includeIf(isD2, [
+      'source:',
+      ...Object.keys(D2Sources).map((word) => `source:${word}`),
+      // maximum stat finders
+      ...hashes.armorStatNames.map((armorStat) => `maxbasestatvalue:${armorStat}`),
+      ...hashes.armorStatNames.map((armorStat) => `maxstatvalue:${armorStat}`),
+      ...hashes.armorStatNames.map((armorStat) => `maxstatloadout:${armorStat}`)
+    ]),
     // all the free text searches that support quotes
     ...['notes:', 'perk:', 'perkname:', 'name:', 'description:']
   ];

@@ -10,6 +10,7 @@ import { percent } from '../shell/filters';
 import { AppIcon } from '../shell/icons';
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { Frame, Track, View, ViewPager } from 'react-view-pager';
+import includeIf from 'app/utils/include-if';
 
 export const enum ItemPopupTab {
   Overview,
@@ -51,24 +52,20 @@ export default function ItemPopupBody({
       title: t('MovePopup.OverviewTab'),
       component: <ItemOverview item={item} extraInfo={extraInfo} />
     },
-    ...(item.isDestiny2()
-      ? [
-          {
-            tab: ItemPopupTab.Triage,
-            title: t('MovePopup.TriageTab'),
-            component: <ItemTriage item={item} />
-          }
-        ]
-      : []),
-    ...(item.reviewable
-      ? [
-          {
-            tab: ItemPopupTab.Reviews,
-            title: t('MovePopup.ReviewsTab'),
-            component: <ItemReviews item={item} />
-          }
-        ]
-      : [])
+    ...includeIf(item.isDestiny2(), [
+      {
+        tab: ItemPopupTab.Triage,
+        title: t('MovePopup.TriageTab'),
+        component: item.isDestiny2() && <ItemTriage item={item} />
+      }
+    ]),
+    ...includeIf(item.reviewable, [
+      {
+        tab: ItemPopupTab.Reviews,
+        title: t('MovePopup.ReviewsTab'),
+        component: <ItemReviews item={item} />
+      }
+    ])
   ];
 
   const onViewChange = (indices) => {
