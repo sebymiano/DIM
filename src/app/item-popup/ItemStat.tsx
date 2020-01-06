@@ -231,7 +231,6 @@ export function isD1Stat(item: DimItem, _stat: DimStat): _stat is D1Stat {
  * Sums up all the armor statistics from the plug in the socket.
  */
 function getSumOfArmorStats(sockets: DimSocket[], armorStatHashes: number[]) {
-  console.log({ sockets, armorStatHashes });
   return _.sumBy(sockets, (socket) =>
     _.sumBy(armorStatHashes, (armorStatHash) => socket.plug?.stats?.[armorStatHash] || 0)
   );
@@ -244,7 +243,6 @@ function breakDownTotalValue(statValue: number, item: DimItem, masterworkSockets
   const totalMasterworkValue = masterworkSockets
     ? getSumOfArmorStats(masterworkSockets, armorStats)
     : 0;
-  console.log(totalModsValue);
   const baseTotalValue = Math.min(statValue - totalModsValue - totalMasterworkValue, 0);
 
   return { baseTotalValue, totalModsValue, totalMasterworkValue };
