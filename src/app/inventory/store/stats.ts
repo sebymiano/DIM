@@ -111,12 +111,16 @@ export function buildStats(
   if (!statGroup) {
     return null;
   }
-
+  if (createdItem.name === 'Righteous Grips') {
+    // console.log(stats?.[createdItem.id]);
+  }
   const statDisplays = _.keyBy(statGroup.scaledStats, (s) => s.statHash);
 
   // We only use the raw "investment" stats to calculate all item stats.
   let investmentStats = buildInvestmentStats(itemDef, defs, statGroup, statDisplays) || [];
-
+  if (createdItem.name === 'Righteous Grips') {
+    // console.log(investmentStats);
+  }
   // Include the contributions from perks and mods
   if (createdItem.sockets?.sockets.length) {
     investmentStats = enhanceStatsWithPlugs(
@@ -373,6 +377,10 @@ function buildPlugStats(
   } = {};
 
   for (const perkStat of plug.plugItem.investmentStats) {
+    if (perkStat.value === -10 && perkStat.statTypeHash === 144602215) {
+      console.log(statsByHash);
+      console.log(statDisplays);
+    }
     let value = perkStat.value || 0;
     const itemStat = statsByHash[perkStat.statTypeHash];
     const statDisplay = statDisplays[perkStat.statTypeHash];
@@ -380,7 +388,16 @@ function buildPlugStats(
       // This is a scaled stat, so we need to scale it in context of the original investment stat.
       // Figure out what the interpolated stat value would be without this perk's contribution, and
       // then take the difference between the total value and that to find the contribution.
+      if (perkStat.value === -10 && perkStat.statTypeHash === 144602215) {
+        console.log(
+          `${itemStat.investmentValue} - ${value} = ${itemStat.investmentValue -
+            value} !! ${JSON.stringify(statDisplay)}`
+        );
+      }
       const valueWithoutPerk = interpolateStatValue(itemStat.investmentValue - value, statDisplay);
+      if (perkStat.value === -10 && perkStat.statTypeHash === 144602215) {
+        console.log(valueWithoutPerk);
+      }
       value = itemStat.value - valueWithoutPerk;
     } else if (itemStat) {
       const valueWithoutPerk = Math.min(itemStat.investmentValue - value, itemStat.maximumValue);

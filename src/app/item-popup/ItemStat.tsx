@@ -33,7 +33,7 @@ const TOTAL_STAT_HASH = -1000;
  * A single stat line.
  */
 export default function ItemStat({ stat, item }: { stat: DimStat; item?: DimItem }) {
-  const value = stat.value;
+  const statValue = stat.value;
   const armor2MasterworkSockets =
     item &&
     item.isDestiny2() &&
@@ -51,27 +51,15 @@ export default function ItemStat({ stat, item }: { stat: DimStat; item?: DimItem
 
   const moddedStatValue = item && getModdedStatValue(item, stat);
 
-  let baseBar = value;
+  const baseStatValue =
+    statValue -
+    // we won't render a negative stat bar, so don't make room for one
+    (Math.max(moddedStatValue || 0, 0) || 0) -
+    (masterworkDisplayValue || 0);
 
-  if (moddedStatValue) {
-    baseBar -= moddedStatValue;
-  }
-
-  if (masterworkDisplayValue) {
-    baseBar -= masterworkDisplayValue;
-  }
-
-  const segments: [number, string?][] = [[baseBar]];
-
-  if (moddedStatValue) {
-    segments.push([moddedStatValue, styles.moddedStatBar]);
-  }
-
-  if (masterworkDisplayValue) {
-    segments.push([masterworkDisplayValue, styles.masterworkStatBar]);
-  }
-
-  const displayValue = value;
+  const segments: [number, string?][] = [[baseStatValue]];
+  moddedStatValue && segments.push([moddedStatValue, styles.moddedStatBar]);
+  masterworkDisplayValue && segments.push([masterworkDisplayValue, styles.masterworkStatBar]);
 
   // Get the values that contribute to the total stat value
   let totalDetails:
@@ -79,7 +67,7 @@ export default function ItemStat({ stat, item }: { stat: DimStat; item?: DimItem
     | undefined;
 
   if (item?.isDestiny2() && stat.statHash === TOTAL_STAT_HASH) {
-    totalDetails = breakDownTotalValue(value, item, armor2MasterworkSockets || []);
+    totalDetails = breakDownTotalValue(statValue, item, armor2MasterworkSockets || []);
   }
 
   const optionalClasses = {
@@ -100,7 +88,7 @@ export default function ItemStat({ stat, item }: { stat: DimStat; item?: DimItem
 
       <div className={clsx(styles.value, optionalClasses)}>
         {stat.additive && '+'}
-        {displayValue}
+        {statValue}
       </div>
 
       {statsMs.includes(stat.statHash) && (
@@ -243,6 +231,7 @@ export function isD1Stat(item: DimItem, _stat: DimStat): _stat is D1Stat {
  * Sums up all the armor statistics from the plug in the socket.
  */
 function getSumOfArmorStats(sockets: DimSocket[], armorStatHashes: number[]) {
+  console.log({ sockets, armorStatHashes });
   return _.sumBy(sockets, (socket) =>
     _.sumBy(armorStatHashes, (armorStatHash) => socket.plug?.stats?.[armorStatHash] || 0)
   );
@@ -255,7 +244,8 @@ function breakDownTotalValue(statValue: number, item: DimItem, masterworkSockets
   const totalMasterworkValue = masterworkSockets
     ? getSumOfArmorStats(masterworkSockets, armorStats)
     : 0;
-  const baseTotalValue = statValue - totalModsValue - totalMasterworkValue;
+  console.log(totalModsValue);
+  const baseTotalValue = Math.min(statValue - totalModsValue - totalMasterworkValue, 0);
 
   return { baseTotalValue, totalModsValue, totalMasterworkValue };
 }
