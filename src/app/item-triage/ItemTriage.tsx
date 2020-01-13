@@ -78,6 +78,7 @@ const itemStat: FactorGenerator = (exampleItem: D2Item, statHash) => {
   };
 };
 
+// a function
 function getItemDesirableFactors(exampleItem: D2Item) {
   const statsToFindMaxesFor = armorStatHashes.concat(exampleItem.primStat?.statHash ?? []);
 
