@@ -26,7 +26,7 @@ import { rarity } from 'app/shell/filters';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import RatingIcon from 'app/inventory/RatingIcon';
 import { getItemSpecialtyModSlotDisplayName } from 'app/utils/item-utils';
-import SpecialtyModSlotIcon from 'app/dim-ui/SpecialtyModSlotIcon';
+import { SpecialtyModSocketIcon } from 'app/dim-ui/ModSocketTypeIcon';
 import { DestinyCollectibleState } from 'bungie-api-ts/destiny2';
 import CompareStat from 'app/compare/CompareStat';
 import { StatInfo } from 'app/compare/Compare';
@@ -267,7 +267,7 @@ export function getColumns(
       // TODO: only show if there are mod slots
       accessor: getItemSpecialtyModSlotDisplayName, //
       Cell: ({ cell: { value }, row: { original: item } }) =>
-        value && <SpecialtyModSlotIcon className={styles.modSlot} item={item} />,
+        value && <SpecialtyModSocketIcon className={styles.modSlot} item={item} />,
       sortType: 'basic'
     },
     {
