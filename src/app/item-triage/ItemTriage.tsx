@@ -12,8 +12,8 @@ import ElementIcon from 'app/inventory/ElementIcon';
 import BungieImage from 'app/dim-ui/BungieImage';
 import styles from './ItemTriage.m.scss';
 
-// surprisingly chill. this seems to just render when item popup spawns.
-// why twice though??
+// surprisingly chill. this seems to just render 2x when item popup spawns.
+// much fewer than i worried. why twice though??
 export default function ItemTriage({ item }: { item: D2Item }) {
   const factors = getItemDesirableFactors(item);
 
