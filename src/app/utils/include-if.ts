@@ -15,6 +15,17 @@ export default function includeIf(condition, elements) {
     : {};
 }
 
+// export default function includeIf<T>(condition, elements:T):[]|T
+// export default function includeIf<T>(condition, elements:T[]):[]|T[] {
+//   return condition
+//     ? (elements !== null && typeof elements[Symbol.iterator] === 'function') ||
+//       typeof elements === 'object'
+//       ? elements
+//       : [elements]
+//     : Array.isArray(elements) || !(typeof elements === 'object' && elements !== null)
+//     ? []
+//     : {};
+// }
 /*
 export default function includeIf(condition, elements: []): [];
 export default function includeIf(condition, elements: object): object {

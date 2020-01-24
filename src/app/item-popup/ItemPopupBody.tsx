@@ -5,12 +5,11 @@ import ItemOverview from './ItemDetails';
 import { ItemPopupExtraInfo } from './item-popup';
 import clsx from 'clsx';
 import ItemReviews from '../item-review/ItemReviews';
-import ItemTriage from '../item-triage/ItemTriage';
 import { percent } from '../shell/filters';
 import { AppIcon } from '../shell/icons';
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { Frame, Track, View, ViewPager } from 'react-view-pager';
-import includeIf from 'app/utils/include-if';
+import ItemTriage from 'app/item-triage/ItemTriage';
 
 export const enum ItemPopupTab {
   Overview,
@@ -51,22 +50,25 @@ export default function ItemPopupBody({
       tab: ItemPopupTab.Overview,
       title: t('MovePopup.OverviewTab'),
       component: <ItemOverview item={item} extraInfo={extraInfo} />
-    },
-    ...includeIf(item.isDestiny2(), [
-      {
-        tab: ItemPopupTab.Triage,
-        title: t('MovePopup.TriageTab'),
-        component: item.isDestiny2() && <ItemTriage item={item} />
-      }
-    ]),
-    ...includeIf(item.reviewable, [
-      {
-        tab: ItemPopupTab.Reviews,
-        title: t('MovePopup.ReviewsTab'),
-        component: <ItemReviews item={item} />
-      }
-    ])
+    }
   ];
+  if (
+    item.isDestiny2() &&
+    (item.bucket.inArmor || item.bucket.inWeapons || item.bucket.inGeneral)
+  ) {
+    tabs.push({
+      tab: ItemPopupTab.Triage,
+      title: t('MovePopup.TriageTab'),
+      component: <ItemTriage item={item} />
+    });
+  }
+  if (item.reviewable) {
+    tabs.push({
+      tab: ItemPopupTab.Reviews,
+      title: t('MovePopup.ReviewsTab'),
+      component: <ItemReviews item={item} />
+    });
+  }
 
   const onViewChange = (indices) => {
     onTabChanged(tabs[indices[0]].tab);

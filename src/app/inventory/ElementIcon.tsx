@@ -20,6 +20,7 @@ export default function ElementIcon({
   if (element && images[element]) {
     return (
       <BungieImage
+        id="element"
         className={clsx(className, styles.element, styles[element])}
         src={`/img/destiny_content/damage_types/destiny2/${images[element]}.png`}
       />
