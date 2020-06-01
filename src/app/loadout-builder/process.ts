@@ -205,7 +205,7 @@ export function process(
   );
 
   // We won't search through more than this number of stat combos - it can cause us to run out of memory.
-  const combosLimit = 500000;
+  const combosLimit = 2000000;
 
   // Get the keys of the object, sorted by total stats descending
   const makeKeys = (obj: { [key: string]: DimItem[] }) =>
